@@ -1,0 +1,14 @@
+{
+	"id": "TESTMOD111",
+	"name": "!testmod",
+	"display_name": "T",
+	"author": ["Angie"],
+	"description": "testing mod for balatro",
+	"prefix": "TESTMOD",
+	"main_file": "main.lua",
+	"priority": 0,
+	"badge_colour": "FAFAFA",
+	"badge_text_colour": "FF8F8A",
+	"version": "0.0.0",
+	"dependencies": [],
+}
