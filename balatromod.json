@@ -1,7 +1,7 @@
 {
 	"id": "TESTMOD111",
 	"name": "!testmod",
-	"display_name": "T",
+	"display_name": "!TESTMOD!",
 	"author": ["Angie"],
 	"description": "testing mod for balatro",
 	"prefix": "TESTMOD",
@@ -10,5 +10,5 @@
 	"badge_colour": "FAFAFA",
 	"badge_text_colour": "FF8F8A",
 	"version": "0.0.0",
-	"dependencies": [],
+	"dependencies": []
 }
