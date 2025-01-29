@@ -42,7 +42,7 @@ SMODS.Joker {
                 Multiple variables can be used in one space, as long as you separate them with a comma. {C:attention, X:chips, s:1.3} would be the yellow attention color, with a blue chips-colored background,, and 1.3 times the scale of other text.
                 You can find the vanilla joker descriptions and names as well as several other things in the localization files.
                 ]]
-            "{X:mult}/2{} Mult"
+            "{X:mult,C:white}/2{} Mult"
         }
     },
     --[[
@@ -89,14 +89,14 @@ SMODS.Joker {
 	loc_txt = {
 		name = 'zKino',
 		text = {
-			"{X:mult}X15{} Mult",
+			"{X:mult,C:white}X15{} Mult",
 			"{C:green}1 in 6{} chance that",
 			"balatro crashes and",
             "rolls back time",
 			"at end of round,",
             " ",
             "{C:green}1 in 1000{} chance of",
-            "this Card Becoming {X:blue}Blue{}"
+            "this Card Becoming {X:chips,C:white}Blue{}"
 		}
 	},
 	config = { extra = { mult = 15, odds = 6 } },
@@ -157,12 +157,123 @@ SMODS.Joker {
 			else
 				return {
 					message = 'Safe!'
+                }
+            end
+                    card.ability.extra.odds = 1000
+                    if pseudorandom('gros_michel3') < G.GAME.probabilities.normal / card.ability.extra.odds then
+                        print("ran owowowowowowowowowowowowowow")
+                        -- This part plays the animation.
+                        G.E_MANAGER:add_event(Event({
+                            func = function()
+                                play_sound('tarot1')
+                                card.T.r = -0.2
+                                card:juice_up(0.3, 0.4)
+                                card.states.drag.is = true
+                                card.children.center.pinch.x = true
+                                -- This part destroys the card.
+                                G.E_MANAGER:add_event(Event({
+                                    trigger = 'after',
+                                    delay = 0.3,
+                                    blockable = false,
+                                    func = function()
+                                        G.jokers:remove_card(card)
+                                        card:remove()
+                                        local card = copy_card(BlueKino)
+                                        card:set_edition('e_negative', true)
+                                        card:add_to_deck()
+                                        G.jokers:emplace(card)
+                                        return true;
+                                    end
+                                }))
+                                return true
+                            end
+                        }))
+                    else
+                        return {
+                        print("ran owowowowowowowowowowowowowow")
+                    }
+                end
+            end
+        end
+}
+
+
+
+SMODS.Joker {
+	key = 'BlueKino',
+	loc_txt = {
+		name = 'Zacherie Ino',
+		text = {
+			"{X:mult,C:white}X15{} Mult",
+			"{C:green}1 in 5000{} chance that",
+			"balatro crashes and",
+            "rolls back time",
+			"at end of round,",
+            "{C:inactive}your blue now!{}"
+		}
+	},
+	config = { extra = { mult = 15, odds = 5000 } },
+	rarity = 1,
+	atlas = 'testjokers',
+	pos = { x = 2, y = 0 },
+	cost = 5,
+	-- Gros Michel is incompatible with the eternal sticker, so this makes sure it can't be eternal.
+	eternal_compat = false,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.mult, (G.GAME.probabilities.normal or 1), card.ability.extra.odds } }
+	end,
+	calculate = function(self, card, context)
+		if context.joker_main then
+			return {
+				mult_mod = card.ability.extra.mult,
+				message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
+			}
+		end
+
+		-- Checks to see if it's end of round, and if context.game_over is false.
+		-- Also, not context.repetition ensures it doesn't get called during repetitions.
+		if context.end_of_round and not context.repetition and context.game_over == false and not context.blueprint then
+			-- Another pseudorandom thing, randomly generates a decimal between 0 and 1, so effectively a random percentage.
+			if pseudorandom('gros_michel2') < G.GAME.probabilities.normal / card.ability.extra.odds then
+				-- This part plays the animation.
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						play_sound('tarot1')
+						card.T.r = -0.2
+						card:juice_up(0.3, 0.4)
+						card.states.drag.is = true
+						card.children.center.pinch.x = true
+						-- This part destroys the card.
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.3,
+							blockable = false,
+							func = function()
+								G.jokers:remove_card(card)
+								card:remove()
+								card = nil
+                                G:save_settings()
+                                G:save_progress()
+                                local f = pseudorandom_element(crashes, pseudoseed("cry_crash"))
+                                f(self, card, area, copier)
+								return true;
+							end
+						}))
+						return true
+					end
+				}))
+				-- Sets the pool flag to true, meaning Gros Michel 2 doesn't spawn, and Cavendish 2 does.
+				return {
+					message = 'Extinct!'
+				}
+			else
+				return {
+					message = 'Safe!'
 				}
 			end
 		end
 	end
 }
-
 
 ----------------------------------------------
 ------------MOD CODE END----------------------
